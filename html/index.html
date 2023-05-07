@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIPHY to Drive</title>
+    <style>
+        html,
+        body {
+        margin: 0;
+        padding: 0;
+        background-color: #212121;
+        height: 100%;
+        color: white;
+        }
+
+        fieldset{
+            border: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 20vh;
+        }
+
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input{
+            height: 50px;
+            border-radius: 20px;
+            border: none;
+            text-align: center;
+            background-color: grey;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <form action="search" method="get">
+        <fieldset>
+            <input type="text" name="gif" class="gifInput" placeholder="GIF Name" autocomplete="off">
+            <input type="submit" value="Search">
+        </fieldset>
+    </form>
+</body>
+</html>
