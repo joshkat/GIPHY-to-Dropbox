@@ -32,7 +32,18 @@ function connection_handler(req, res){
         const state = crypto.randomBytes(20).toString("hex");
         const searched_gif = inputURL.searchParams.get("gif");
         task_states.push({state, searched_gif});
-        giphy_request({response: res, searched_gif: searched_gif, state: state});
+
+        //check if searched gif is already in downloaded folder
+        let cached = false;
+        const cached_gifs = fs.readdirSync("./downloaded");
+        console.log(cached_gifs);
+        for(let i = 0; i < cached_gifs.length; i++){
+            if(cached_gifs[i] === `${searched_gif}.gif`){
+                redirect_to_dropbox(res, state);
+                cached = true;
+            }
+        }
+        giphy_request({response: res, searched_gif: searched_gif, state: state, cached: cached});
     }else if(req.url.startsWith("/received_code")){
         const url = new URL(req.url, "http://localhost:3000/");
         const code = url.searchParams.get("code");
@@ -45,7 +56,7 @@ function connection_handler(req, res){
                 bad_request_error(res);
                 return;
             }
-            get_user_token({response: res, gif_dir: `./downloaded/${task_state.searched_gif}_${task_state.state}`, code: code});
+            get_user_token({response: res, gif_dir: `./downloaded/${task_state.searched_gif}`, code: code});
         }else{
             //otherwise redirect to main + remove gif + remove session
             res.writeHead(302, {Location: "/"});
@@ -71,6 +82,7 @@ function connection_handler(req, res){
 
 //will GET top gif result from giphy
 function giphy_request(obj){
+    if(obj.cached === true) return;
     const search_endpoint = `https://api.giphy.com/v1/gifs/search?api_key=${giphy_auth_key}&q=${obj.searched_gif}`;
     let gif_request = https.request(search_endpoint, (res) => {stream_to_message(res, download_gif_request, obj.response, obj.state, obj.searched_gif)});
     gif_request.end();
@@ -86,7 +98,7 @@ function download_gif_request(stringJSON, response, state, searched_gif){
     }
     
     const gif_source_url = "https://i." + (giphyJSON.data[0].images.original.url).substring(15); //creates actual source URL
-    const gif_dest = (`./downloaded/${searched_gif}_${state}.gif`);
+    const gif_dest = (`./downloaded/${searched_gif}.gif`);
     const gif_file = fs.createWriteStream(gif_dest);
     
     const gif_download_request = https.request(gif_source_url, (gif_response) => {
@@ -98,6 +110,7 @@ function download_gif_request(stringJSON, response, state, searched_gif){
 }
 
 function redirect_to_dropbox(response, state){
+    console.log("redirecting...")
     const oauth_endpoint = "https://www.dropbox.com/oauth2/authorize";
     //querystring builds the query part without having to manually build URL as part of the oauth_endpoint const
     const uri = querystring.stringify({client_id: dropbox_auth_keys.App_Key, response_type: "code", redirect_uri:"http://localhost:3000/received_code", state: state});
@@ -164,14 +177,7 @@ function upload_to_dropbox(stringJSON, gif_dir, response){
 function receive_upload_response(body, response, gif_dir){
     const results = JSON.parse(body);
     console.log(results);
-    fs.unlink(`${gif_dir}.gif`, (err) => {
-        if(err){
-            console.error(err);
-            return;
-        }
-        console.log("File removed from server");
-    });
-
+    console.log("Uploaded GIF");
     response.writeHead(302, {Location: "/success"});
     response.end();
 }
