@@ -27,7 +27,6 @@ function connection_handler(req, res){
         res.writeHead(200, {"Content-Type" : "text/html"});
         landingPage.pipe(res);
     }else if(req.url.startsWith("/search")){
-
         const inputURL = new URL(req.url, `http://localhost:${port}/`);
         //create session at this point
         const state = crypto.randomBytes(20).toString("hex");
@@ -52,9 +51,17 @@ function connection_handler(req, res){
                 return;
             }
             get_user_token({response: res, gif_dir: `./downloaded/${task_state.searched_gif}_${task_state.state}`, code: code});
+        }else{
+            //otherwise redirect to main + remove gif + remove session
+            res.writeHead(302, {Location: "/"});
+            res.end();
         }
-        //otherwise redirect to main + remove gif + remove session
-        res.writeHead(302, {Location: "/"});
+    }else if(req.url === "/success"){
+        const successPage = fs.createReadStream("./html/success.html");
+        res.writeHead(200, {"Content-Type": "text/html"});
+        successPage.pipe(res);
+    }else if(req.url === "/dropbox"){
+        res.writeHead(302, {Location: "https://www.dropbox.com/home/Apps/GIPHYUploader/downloaded"});
         res.end();
     }else if(req.url === "/html/error400.html"){
         const errorPage = fs.createReadStream("./html/error400.html");
@@ -133,7 +140,6 @@ function upload_to_dropbox(stringJSON, gif_dir, response){
         return;
     }
     
-    console.log(user_token, "WE MADE IT");
     const upload_endpoint = "https://content.dropboxapi.com/2/files/upload";
     const api_arg = Buffer.from(JSON.stringify({
         "autorename": false,

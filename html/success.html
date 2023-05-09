@@ -4,10 +4,53 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Uploaded!</title>
+    <title>File Uploaded</title>
+    <style>
+        html,
+        body {
+        margin: 0;
+        padding: 0;
+        background-color: #212121;
+        height: 100%;
+        color: white;
+        font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        button{
+            margin-top: 20px;
+            height: 50px;
+            border-radius: 20px;
+            border: none;
+            text-align: center;
+            background-color: grey;
+            color: white;
+        }
+
+        button:hover{
+            background-color: darkgrey;
+        }
+        .buttonHolder{
+            display: flex;
+            width: 400px;
+            justify-content: space-around;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Wow, great moves keep it up. Proud of you</h1>
-    <iframe src="https://giphy.com/embed/M3wShla4K8GMT5Zzyt" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/steve-developers-balmer-M3wShla4K8GMT5Zzyt">via GIPHY</a></p>
+    <h1>Wow, great moves keep it up. <br> Your GIF has been sucessfully uploaded.</h1>
+    
+    <img src="https://media0.giphy.com/media/bTzFnjHPuVvva/giphy.gif?cid=ecf05e47fgncg2trq5agzwvksesyzkz36563r6fxltu3xdru&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="♚">
+    <div class="buttonHolder">
+        <button onclick="location.href = '/'">Upload Another GIF</button>
+        <button onclick="location.href = '/dropbox'">Go to Dropbox</button>
+    </div>
 </body>
 </html>
