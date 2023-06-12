@@ -8,7 +8,7 @@ Before running the application, make sure you have Node.js installed on your sys
 
 1. Clone this repository or download the source code.
 2. Open a terminal window and navigate to the project directory.
-4. Create the two files **dropbox_key.json** and **giphy_key.json** make them look as follows
+3. Create the two files **dropbox_key.json** and **giphy_key.json** make them look as follows
 
 ```javascript
 //giphy_key.json
@@ -24,7 +24,7 @@ Before running the application, make sure you have Node.js installed on your sys
     "App_Secret":"YOUR DROPBOX APP SECRET"
 }
 ```
-5. Assuming you have node installed on your machine within the same directory type
+4. Assuming you have node installed on your machine within the same directory type
 ```bash
 node server.js
 ```
